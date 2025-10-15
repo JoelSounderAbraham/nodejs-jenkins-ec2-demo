@@ -1,0 +1,38 @@
+{
+  "name": "nodejs-jenkins-ec2-demo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest --coverage --runInBand",
+    "start": "node src/index.js"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-junit": "^16.0.0"
+  },
+  "jest-junit": {
+    "outputDirectory": "reports/junit",
+    "outputName": "junit.xml"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text",
+      "html"
+    ],
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "outputDirectory": "reports/junit",
+          "outputName": "junit.xml"
+        }
+      ]
+    ]
+  }
+}
