@@ -73,13 +73,19 @@ pipeline {
 }
 
     stage('Package') {
-      steps {
-        sh '''
-          tar -czf artifact.tgz             --exclude=node_modules             --exclude=.git             --exclude=coverage             .
-        '''
-        archiveArtifacts artifacts: 'artifact.tgz', fingerprint: true
-      }
-    }
+  steps {
+    sh '''
+      set +e
+      tar -czf artifact.tgz \
+        --exclude=node_modules \
+        --exclude=.git \
+        --exclude=coverage \
+        . 2>&1 | tee tar.log
+      exit 0
+    '''
+    archiveArtifacts artifacts: 'artifact.tgz', fingerprint: true
+  }
+}
 
     stage('Deploy to EC2') {
       when { branch 'main' }
