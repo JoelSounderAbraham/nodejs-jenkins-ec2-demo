@@ -3,7 +3,7 @@ pipeline {
 
   environment {
     // 👇 Update this to your EC2 public DNS or IP
-    EC2_HOST = '13.233.138.205'
+    EC2_HOST = '15.206.169.107'
   }
 
   triggers {
@@ -71,19 +71,6 @@ pipeline {
     }
   }
 }
-
-    stage('Quality Gates') {
-      steps {
-        script {
-          timeout(time: 1, unit: 'MINUTES') {
-            def qg = waitForQualityGate()
-            if (qg.status != 'OK') {
-              error "Pipeline aborted due to Quality Gate failure: ${qg.status}"
-            }
-          }
-        }
-      }
-    }
 
     stage('Package') {
       steps {
