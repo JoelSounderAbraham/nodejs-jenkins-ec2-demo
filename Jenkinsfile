@@ -3,7 +3,7 @@ pipeline {
 
   environment {
     // 👇 Update this to your EC2 public DNS or IP
-    EC2_HOST = 'ec2-xx-xx-xx-xx.compute.amazonaws.com'
+    EC2_HOST = '13.233.138.205'
   }
 
   triggers {
@@ -55,17 +55,22 @@ pipeline {
     }
 
     stage('SonarQube Analysis') {
-      steps {
-        withSonarQubeEnv('MySonarQube') {
-          sh '''
-            # Ensure coverage lcov is present (usually from tests)
-            [ -f coverage/lcov.info ] || echo "No lcov found, rerunning jest for lcov..."
-
-            sonar-scanner               -Dsonar.projectKey=nodejs-jenkins-ec2-demo               -Dsonar.sources=src               -Dsonar.tests=test               -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info               -Dsonar.sourceEncoding=UTF-8
-          '''
-        }
+  steps {
+    withSonarQubeEnv('MySonarQube') {
+      script {
+        def scannerHome = tool 'sonar-scanner'  // 👈 Jenkins tool name
+        sh """
+          ${scannerHome}/bin/sonar-scanner \
+            -Dsonar.projectKey=nodejs-jenkins-ec2-demo \
+            -Dsonar.sources=src \
+            -Dsonar.tests=test \
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+            -Dsonar.sourceEncoding=UTF-8
+        """
       }
     }
+  }
+}
 
     stage('Quality Gate') {
       steps {
